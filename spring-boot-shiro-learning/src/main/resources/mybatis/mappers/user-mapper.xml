@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuan.cn.mapper.UserMapper">
+ 
+	<resultMap id="userMap" type="com.yuan.cn.pojo.User">
+		<id property="id" column="uid"></id>
+		<result property="username" column="username"></result>
+		<result property="password" column="password"></result>
+		<collection property="roles" ofType="com.yuan.cn.pojo.Role">
+			<id property="id" column="rid"></id>
+			<result property="name" column="name"></result>
+			<collection property="permissions" ofType="com.yuan.cn.pojo.Permission">
+				<id property="id" column="pid"></id>
+				<result property="name" column="name"></result>
+				<result property="url" column="url"></result>
+			</collection>
+		</collection>
+	</resultMap>
+	
+	<select id="findUserByUserName" resultMap="userMap" parameterType="string" resultType="user">
+		SELECT  from user u.* r.* p.*
+			inner join user_role ur on ur.uid = u.id
+			inner join role r on r.rid = ur.rid
+			inner join permission_role pr on pr.rid = r.rid
+			inner join permission p on pr.pid = p.pid
+		where u.username = 	#{username}
+	</select>
+	
+</mapper>
